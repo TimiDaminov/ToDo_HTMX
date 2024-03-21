@@ -1,0 +1,125 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://unpkg.com/htmx.org@1.9.11" integrity="sha384-0gxUXCCR8yv9FM2b+U3FDbsKthCI66oH5IA9fHppQq9DDMHuMauqq1ZHBpJxQ0J0" crossorigin="anonymous"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>To Do list</title>
+</head>
+<body>
+    <div class="max-w-md mx-auto mt-10">
+    <form
+        hx-trigger="submit"
+        hx-post="/addtask"
+        hx-target="#tasks_container"
+        class="mb-10"
+        >
+          <label for="task" class="text-xl">Enter your task:</label>
+          <input
+            type="text"
+            id="task"
+            name="task"
+            class="border p-2 rounded"
+            placeholder="write your task here..."
+            maxlength="50"
+            required
+          />
+          <button
+            type="submit"
+            class="bg-blue-500 text-white px-4 py-2 rounded"
+           >
+            Add
+          </button>
+          <div id="tasks_container" hx-get="/retrieve_tasks" hx-trigger="load" class="mt-10"></div>
+        </form>
+                
+      </div>
+</body>
+<script>
+</script>
+</html> -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>To Do list</title>
+</head>
+<body>
+    <div class="max-w-md mx-auto mt-10">
+        <form id="taskForm" class="mb-10">
+            <label for="task" class="text-xl">Enter your task:</label>
+            <input
+                type="text"
+                id="task"
+                name="task"
+                class="border p-2 rounded"
+                placeholder="write your task here..."
+                maxlength="50"
+                required
+            />
+            <button
+                type="submit"
+                class="bg-blue-500 text-white px-4 py-2 rounded"
+                onclick="addTask()"
+            >
+                Add
+            </button>
+        </form>
+        <div id="tasks_container" class="mt-10"></div>
+    </div>
+
+    <script>
+        function addTask(){
+          event.preventDefault()
+          const formData = {
+            task: document.getElementById('task').value
+          }
+          fetch('/addtask',{
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(formData)
+          }).then((response) => response.text()).then((data) => {
+            document.getElementById("tasks_container").innerHTML = data
+          })
+        }
+
+        function finishTask(taskText) {
+          event.preventDefault()
+          const formData = {
+            task: taskText
+          }
+          fetch('/finishTask',{
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(formData)
+          }).then((response) => response.text()).then((data) => {
+            document.getElementById("tasks_container").innerHTML = data
+          })
+        }
+
+         function retrieveTasks(){
+          event.preventDefault()
+          fetch('/retrieve_tasks',{
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }).then((response) => response.text()).then((data) => {
+            document.getElementById("tasks_container").innerHTML = data
+          })
+        }
+      
+    document.addEventListener('DOMContentLoaded', retrieveTasks);
+    </script>
+</body>
+</html>
